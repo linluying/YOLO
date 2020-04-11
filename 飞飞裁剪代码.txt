@@ -1,0 +1,62 @@
+% 这里是CUT.m文件的内容 
+
+
+
+fog25ReadTxt;
+% x1=pcb1_test{1,2};
+% y1=pcb1_test{1,3};
+% w=pcb1_test{1,4};
+% h=pcb1_test{1,5};
+count=0;
+R=[];  
+for i=1:1:3636
+x1=missing_train{i,2};
+y1=missing_train{i,3};
+w=missing_train{i,4};
+h=missing_train{i,5}; 
+
+%裁剪
+a='C:\Users\Administrator.SC-201903012023\Desktop\cut_little_aim\JPEGImages\';
+b=data1{i,1};
+c='.jpg';
+d=[a b c];
+e='C:\Users\Administrator.SC-201903012023\Desktop\cut_little_aim\missing_hole\';
+
+A=imread(d);
+rect=[x1-w/2 y1-h/2 w h]*600.0;
+A1=imcrop(A,rect);
+%imshow(A1);
+
+%尺寸64*64
+B=imresize(A1,[64,64]);
+count = count+1;
+filename = [e b c];
+imwrite(B,filename);
+
+%转灰度图像
+C=rgb2gray(B);
+%转矩阵
+D = reshape(C, 1, prod(size(C))); % prod是累乘
+F=im2double(D);
+R=[R;F];
+%imshow(R)
+end
+
+count
+
+
+
+=================================以下这是fog25ReadTxt.m代码===================
+% fid=fopen('comp4_det_test_bicycle.txt','r'); %得到文件号
+% [f,count]=fscanf(fid,'%f_%f_%f_%f %f %f',[49372,6]);
+% %把文件号1的数据读到f中。其中f是[12 90]的矩阵
+% %这里'%f %f'表示读取数据的形势，他是按原始数据型读出
+% fclose(fid);
+filename = 'C:\Users\Administrator.SC-201903012023\Desktop\cut_little_aim\missing_train.txt';
+[data1,data2,data3,data4,data5]=textread(filename,'%s%f%f%f%f',3636);
+data2=num2cell(data2);
+data3=num2cell(data3);
+data4=num2cell(data4);
+data5=num2cell(data5);
+
+missing_train=cat(2,data1,data2,data3,data4,data5);
